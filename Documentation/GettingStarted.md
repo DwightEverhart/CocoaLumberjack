@@ -8,16 +8,31 @@ There are 3 steps to getting started with the logging framework:
 2.  Configure the framework.
 3.  Convert your NSLog statements to use the Lumberjack macros
 
-### Add the lumberjack files to your project
+### Add LumberJack to your project
 
-The main files you need to add are:
+#### CocoaPods
 
--   DDLog (Basis of entire framework)
--   DDASLLogger (sends log statements to Apple System Logger, so they show up on Console.app)
--   DDTTYLogger (sends log statements to Xcode console - if available)
--   DDFileLogger (sends log statements to a file)
+```ruby
+platform :ios, '5.0'
+pod 'CocoaLumberjack'
+```
 
-DDLog is mandatory, and the others are optional depending on how you intend to use the framework. For example, if you don't intend to log to a file, you can skip DDFileLogger. Or if you want to skip ASL in favor of faster file logging, you could skip DDASLLogger.
+#### Manual installation
+
+	git submodule add git@github.com:CocoaLumberjack/CocoaLumberjack.git
+
+* Drag `CocoaLumberjack/Framework/{Desktop/Mobile}/Lumberjack.xcodeproj` into your project
+* In your App target Build Settings
+	* Add to 'User Header Search Paths' `$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts/include`
+	* Set 'Always Search User Paths' to YES
+* In your App target Build Phases
+	* Add CocoaLumberjack static library target to 'Target Dependencies'
+	* Add `libCocoaLumberjack.a` to 'Link Binary With Libraries'
+* Include the framework in your source files with 
+
+```objective-c
+#import <CocoaLumberjack/CocoaLumberjack.h>
+```
 
 ### Configure the framework
 
@@ -68,18 +83,18 @@ So all you need to do is decide which log level each NSLog statement belongs to.
 -   DDLogDebug
 -   DDLogVerbose
 
-(You can also [[customize the levels or the level names | CustomLogLevels]]. Or you can [[add fine-grained control on top of or instead of simple levels | FineGrainedLogging]].)
+(You can also [customize the levels or the level names](CustomLogLevels.md). Or you can [add fine-grained control on top of or instead of simple levels](FineGrainedLogging.md).)
 
 Which log level you choose per NSLog statement depends, of course, on the severity of the message.
 
 These tie into the log level just as you would expect
 
--   If you set the log level to LOG\_LEVEL\_ERROR, then you will only see DDLogError statements.
--   If you set the log level to LOG\_LEVEL\_WARN, then you will only see DDLogError and DDLogWarn statements.
--   If you set the log level to LOG\_LEVEL\_INFO, you'll see Error, Warn and Info statements.
--   If you set the log level to LOG\_LEVEL\_DEBUG, you'll see Error, Warn, Info and Debug statements.
--   If you set the log level to LOG\_LEVEL\_VERBOSE, you'll see all DDLog statements.
--   If you set the log level to LOG\_LEVEL\_OFF, you won't see any DDLog statements.
+-   If you set the log level to DDLogLevelError, then you will only see Error statements.
+-   If you set the log level to DDLogLevelWarn, then you will only see Error and Warn statements.
+-   If you set the log level to DDLogLevelInfo, you'll see Error, Warn and Info statements.
+-   If you set the log level to DDLogLevelDebug, you'll see Error, Warn, Info and Debug statements.
+-   If you set the log level to DDLogLevelVerbose, you'll see all DDLog statements.
+-   If you set the log level to DDLogLevelOff, you won't see any DDLog statements.
 
 Where do I set the log level? Do I have to use a single log level for my entire project?
 
@@ -106,9 +121,9 @@ Here's all it takes to convert your log statements:
 // TO THIS
 
 #import "Sprocket.h"
-#import "DDLog.h"
+#import "CocoaLumberjack.h"
 
-static const int ddLogLevel = LOG_LEVEL_VERBOSE;
+static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 
 @implementation Sprocket
 
@@ -124,7 +139,7 @@ Notice that the log level is declared as a constant. This means that DDLog state
 
 ### Automatic Reference Counting (ARC)
 
-The latest versions of Lumberjack use ARC. If you're not using ARC in your project, learn how to properly flag the Lumberjack files as ARC in your Xcode project on the [[ARC]] page.
+The latest versions of Lumberjack use ARC. If you're not using ARC in your project, learn how to properly flag the Lumberjack files as ARC in your Xcode project on the [ARC](ARC.md) page.
 
 ### Learn More about Lumberjack
 
@@ -132,9 +147,9 @@ This is just the tip of the iceberg.
 
 Find out how to:
 
--   [[Automatically use different log levels for your debug vs release builds | XcodeTricks]]
--   [[Tailor the log levels to suite your needs | CustomLogLevels]]
--   [[Filter logs based on logger settings | PerLoggerLogLevels]]
--   [[Write your own custom formatters | CustomFormatters]]
--   [[Write your own custom loggers | CustomLoggers]]
--   [[And more... | Home]]
+-   [Automatically use different log levels for your debug vs release builds](XcodeTricks.md)
+-   [Tailor the log levels to suite your needs](CustomLogLevels.md)
+-   [Filter logs based on logger settings](PerLoggerLogLevels.md)
+-   [Write your own custom formatters](CustomFormatters.md)
+-   [Write your own custom loggers](CustomLoggers.md)
+-   [And more...](README.md)
